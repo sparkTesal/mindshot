@@ -29,82 +29,117 @@ Mind Shot 看起来像是一个简单的聊天窗口（类似微信"文件传输
 ```
 mind-shot/
 ├── frontend/              # 前端 React 应用
-│   ├── public/
 │   ├── src/
-│   │   ├── App.jsx
-│   │   ├── pages/
-│   │   │   ├── ChatPage.jsx
-│   │   │   └── LoginPage.jsx
-│   │   ├── components/
-│   │   │   ├── MessageBubble.jsx
-│   │   │   ├── InputBar.jsx
-│   │   │   └── DetailDrawer.jsx
-│   │   ├── api/
-│   │   │   └── api.js
-│   │   └── utils/
-│   │       └── auth.js
-│   └── package.json
+│   │   ├── pages/        # 页面组件
+│   │   ├── components/   # UI 组件
+│   │   ├── api/          # API 封装
+│   │   └── utils/        # 工具函数
+│   ├── Dockerfile
+│   └── nginx.conf
 │
 ├── backend/              # 后端 Flask 应用
 │   ├── app.py           # 主应用
 │   ├── models.py        # 数据模型
 │   ├── config.py        # 配置
-│   ├── requirements.txt
-│   └── uploads/         # 上传文件目录
+│   ├── Dockerfile
+│   └── requirements.txt
 │
-└── docker-compose.yml   # MinIO 容器配置
+├── docker-compose.yml   # Docker 编排
+├── start.sh            # 启动脚本
+├── stop.sh             # 停止脚本
+└── check-env.sh        # 环境检查脚本
 ```
 
 ## 🚀 快速开始
 
-### 1. 启动后端
+### 方式一：Docker 部署（推荐）
 
 ```bash
+# 克隆项目
+git clone https://github.com/your-username/mind-shot.git
+cd mind-shot
+
+# 启动所有服务
+docker-compose up -d
+
+# 查看日志
+docker-compose logs -f
+
+# 停止服务
+docker-compose down
+```
+
+访问地址：
+- 前端：http://localhost:3000
+- 后端 API：http://localhost:5000
+
+### 方式二：本地开发
+
+#### 环境要求
+- Python 3.8+
+- Node.js 16+
+- npm 8+
+
+#### 使用启动脚本
+
+```bash
+# 检查环境
+./check-env.sh
+
+# 一键启动
+./start.sh
+
+# 停止服务
+./stop.sh
+```
+
+#### 手动启动
+
+**启动后端：**
+```bash
 cd backend
-
-# 创建虚拟环境（推荐）
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# 安装依赖
 pip install -r requirements.txt
-
-# 启动服务
 python app.py
 ```
 
-后端将在 http://localhost:5000 启动
-
-### 2. 启动前端
-
+**启动前端：**
 ```bash
 cd frontend
-
-# 安装依赖
 npm install
-
-# 启动开发服务器
 npm start
 ```
 
-前端将在 http://localhost:3000 启动
-
-### 3. MinIO（可选）
-
-如果需要对象存储功能：
+## 🐳 Docker 命令
 
 ```bash
-docker-compose up -d minio
-```
+# 构建并启动
+docker-compose up -d --build
 
-MinIO Console 将在 http://localhost:9001 可用
-- 用户名: admin
-- 密码: admin123456
+# 仅启动后端和前端
+docker-compose up -d backend frontend
+
+# 启动包括 MinIO 存储
+docker-compose --profile storage up -d
+
+# 查看运行状态
+docker-compose ps
+
+# 查看日志
+docker-compose logs -f backend
+docker-compose logs -f frontend
+
+# 停止并删除容器
+docker-compose down
+
+# 停止并删除数据卷
+docker-compose down -v
+```
 
 ## 📱 API 接口
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
+| GET | `/api/health` | 健康检查 |
 | POST | `/api/register` | 用户注册 |
 | POST | `/api/login` | 用户登录 |
 | GET | `/api/messages` | 获取消息列表 |
@@ -116,12 +151,14 @@ MinIO Console 将在 http://localhost:9001 可用
 
 ### MVP 阶段（已完成）
 - ✅ 用户注册/登录
+- ✅ JWT Token 认证
 - ✅ 基础聊天界面
-- ✅ 发送/接收文本消息
-- ✅ 简单的 Agent 回复（Mock）
+- ✅ 发送/接收消息
+- ✅ Agent 智能回复（Mock）
 - ✅ 富卡片消息展示
 - ✅ 详情抽屉弹出
 - ✅ 移动端适配
+- ✅ Docker 部署支持
 
 ### 后续优化
 - [ ] 接入真实 LLM API
@@ -133,19 +170,19 @@ MinIO Console 将在 http://localhost:9001 可用
 
 ## 🔧 环境变量
 
-### 后端 (.env)
-```
-SECRET_KEY=your-secret-key
-JWT_SECRET_KEY=your-jwt-secret
-DATABASE_PATH=mindshot.db
-UPLOAD_FOLDER=uploads
-OPENAI_API_KEY=your-openai-key
-```
+### 后端
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| SECRET_KEY | mind-shot-secret-key | Flask 密钥 |
+| JWT_SECRET_KEY | jwt-secret-key | JWT 密钥 |
+| DATABASE_PATH | mindshot.db | 数据库路径 |
+| UPLOAD_FOLDER | uploads | 上传目录 |
+| CORS_ORIGINS | http://localhost:3000 | 允许的跨域源 |
 
-### 前端 (.env)
-```
-REACT_APP_API_BASE=http://localhost:5000/api
-```
+### 前端
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| REACT_APP_API_BASE | http://localhost:5000/api | API 地址 |
 
 ## 📝 License
 
