@@ -1,0 +1,21 @@
+✅ 数据库初始化完成
+🚀 Mind Shot API 启动中...
+📍 访问地址: http://localhost:5000
+ * Serving Flask app 'app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.30.0.2:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 319-328-969
+127.0.0.1 - - [10/Dec/2025 08:39:40] "GET /api/health HTTP/1.1" 200 -
+127.0.0.1 - - [10/Dec/2025 08:39:48] "[35m[1mPOST /api/register HTTP/1.1[0m" 201 -
+127.0.0.1 - - [10/Dec/2025 08:39:57] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [10/Dec/2025 08:40:05] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [10/Dec/2025 08:40:05] "[35m[1mPOST /api/messages HTTP/1.1[0m" 201 -
+127.0.0.1 - - [10/Dec/2025 08:40:05] "[35m[1mPOST /api/messages HTTP/1.1[0m" 201 -
+127.0.0.1 - - [10/Dec/2025 08:40:19] "POST /api/login HTTP/1.1" 200 -
+127.0.0.1 - - [10/Dec/2025 08:40:19] "GET /api/messages HTTP/1.1" 200 -
